@@ -1,7 +1,3 @@
-import _root_.circt.stage.ChiselStage
-import chisel3._
-import chisel3.util._
-
 class PopCount extends Module {
     val io = IO(new Bundle {
         // 输入数据有效
@@ -63,7 +59,7 @@ class PopCountDataPath extends Module {
     }
     
     // 调试用
-    // printf("%b %d\t", dataReg, popCountReg)
+    printf("%b %d\t", dataReg, popCountReg)
     
     io.popCount := popCountReg
     io.done := done
@@ -109,13 +105,5 @@ class PopCountFSM extends Module {
         }
     }
     // 调试用
-    // printf("state: %b\n", stateReg)
+    printf("state: %b\n", stateReg)
 }
-
-object GenMain extends App {
-    ChiselStage.emitSystemVerilogFile(
-    new PopCount,
-    firtoolOpts = Array("-disable-all-randomization", "-strip-debug-info")
-  )
-}
-

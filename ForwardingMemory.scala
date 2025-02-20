@@ -1,4 +1,4 @@
-class Memory() extends Module {
+class ForwardingMemory() extends Module {
     val io = IO(new Bundle {
         val rdAddr = Input(UInt(10.W))
         val rdData = Output(UInt(8.W))
@@ -9,9 +9,14 @@ class Memory() extends Module {
     
     val mem = SyncReadMem(1024, UInt(8.W))
     
-    io.rdData := mem.read(io.rdAddr)
+    val wrDataReg = RegNext(io.wrData)
+    val doForwardReg = RegNext(io.wrAddr === io.rdAddr && io.wrEnabale)
+    
+    val memData = mem.read(io.rdAddr)
     
     when(io.wrEnable) {
         mem.write(io.wrAddr, io.wrData)
     }
+    
+    io.rdData := Mux(doForwardReg, wrDataReg, memData)
 }
